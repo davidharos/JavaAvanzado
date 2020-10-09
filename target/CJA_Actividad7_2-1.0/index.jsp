@@ -15,7 +15,7 @@
     </head>
     <body>
         <h1>Calculadora de area y Perimetro para Triangulos</h1>
-
+              
         <form action="calcular" method="post">
             Introduzca la Base:
             <input type="text" name="base">
@@ -32,6 +32,14 @@
             </p>          
         </form>
 
+        <% 
+            if(request.getAttribute("filtro") != null)
+            {
+                out.print("<h2>Unicamente puedes ingresar valores mayores a 0</h2>");
+            }
+
+        %>
+   
         <h2>Ultimo triangulo calculado:</h2>
         <!-- Cookies -->
         <%
@@ -59,11 +67,10 @@
         %>
 
         <!-- Sesion  -->
-        <% 
+        <%
             HttpSession sesion = request.getSession(false);
             Enumeration e = sesion.getAttributeNames();
-            if(e.hasMoreElements())
-            {
+            if (e.hasMoreElements()) {
                 out.print("<p>Ultimo nombre registrado es </P> ");
                 out.print(sesion.getAttribute("autor"));
             }

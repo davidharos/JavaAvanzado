@@ -4,9 +4,9 @@
  * and open the template in the editor.
  */
 package controller;
+
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashSet;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -26,37 +26,47 @@ public class calcular extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            
-            //Se reciben los datos con un request
-            String b = request.getParameter("base");
-            String h = request.getParameter("altura");
-            String a = request.getParameter("autor");
-            
-            //Se inicializa el objeto de operaciones
-            operaciones op = new operaciones(b,h,a);
-            
-            op.calcArea();
-            double resultadoArea = op.getArea();
-            op.calcPerim();
-            double resultadoPerim = op.getPerim();
-            request.setAttribute("resultados",op);
-            
-           
-            //Cookies
-            Cookie ck = new Cookie("base",op.getBase()+"");
-            response.addCookie(ck);
-            ck= new Cookie("altura",op.getAltura()+ "");
-            response.addCookie(ck);
-            ck= new Cookie("resultadoArea",op.getArea()+"");
-            response.addCookie(ck);
-            ck= new Cookie("resultadoPerim",op.getPerim()+"");
-            response.addCookie(ck);
-            
-            //Sesiones
-            HttpSession sesion = request.getSession(false);
-            sesion.setAttribute("autor",op.getAutor());
-            
-            request.getRequestDispatcher("/resultados.jsp").forward(request, response);
+
+            //Se revisa si el filtro cambio de status
+            if (request.getAttribute("filtro") != null) {
+                //si hubo un cambio, se redirecciona al index.
+                request.setAttribute("filtro", 1);
+                request.getRequestDispatcher("/index.jsp").forward(request, response);
+                
+            } else {
+                //Se reciben los datos con un request
+                String b = request.getParameter("base");
+                String h = request.getParameter("altura");
+                String a = request.getParameter("autor");
+
+                //Se inicializa el objeto de operaciones
+                operaciones op = new operaciones(b, h, a);
+                
+                //Se llaman a los metodos para realizar operaciones
+                op.calcArea();
+                double resultadoArea = op.getArea();
+                op.calcPerim();
+                double resultadoPerim = op.getPerim();
+                //se envian los resultados
+                request.setAttribute("resultados", op);
+
+                //Cookies
+                Cookie ck = new Cookie("base", op.getBase() + "");
+                response.addCookie(ck);
+                ck = new Cookie("altura", op.getAltura() + "");
+                response.addCookie(ck);
+                ck = new Cookie("resultadoArea", op.getArea() + "");
+                response.addCookie(ck);
+                ck = new Cookie("resultadoPerim", op.getPerim() + "");
+                response.addCookie(ck);
+
+                //Sesiones
+                HttpSession sesion = request.getSession(false);
+                sesion.setAttribute("autor", op.getAutor());
+
+                request.getRequestDispatcher("/resultados.jsp").forward(request, response);
+            }
+
         }
     }
 
